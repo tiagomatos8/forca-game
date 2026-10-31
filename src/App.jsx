@@ -5,6 +5,7 @@ import {
   getWrongGuesses,
   isGameWon,
   isGameLost,
+  canUseHint,
 } from "./utils/gameLogic";
 import HangmanDrawing from "./components/HangmanDrawing";
 import WordDisplay from "./components/WordDisplay";
@@ -35,6 +36,7 @@ export default function App() {
     setWordEntry((prev) => getRandomWord(prev.word));
     setGuessedLetters([]);
     setShowHint(false);
+    setIsHintPermited(false);
   }, []);
 
   // Physical keyboard support for desktop play
@@ -54,7 +56,7 @@ export default function App() {
   // Hint should be only permited when 2 lives left.
   // in a useeffect.
   useEffect(() => {
-    if (livesLeft <= 2) {
+    if (canUseHint(livesLeft)) {
       setIsHintPermited(true);
     }
   }, [livesLeft]);

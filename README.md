@@ -1,16 +1,20 @@
-# React + Vite
+# 🎮 Forca Game (Super Hangman)
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A mobile- and desktop-friendly English Hangman game built with **Vite, React, JavaScript, Tailwind CSS, and Vitest**, created as a parent + 7-year-old coding adventure and hosted on **GitHub Pages**.
 
-Currently, two official plugins are available:
+## ✨ Features
+- **Classic 6-Lives Hangman**: Interactive SVG stick figure that updates with each wrong guess.
+- **Last-Chance Hint System**: Hints stay locked (`"💡 Hint not permited yet!"`) until the player is down to **2 or fewer lives remaining**, unlocking the `"💡 Need a Hint?"` button.
+- **Dual Input**: Play using the on-screen touch keyboard or a physical desktop keyboard (`A–Z`, plus `Enter` to play again).
+- **Kid-Hackable & Tested**: Pure game rules in `src/utils/gameLogic.js` covered by Vitest unit tests in `src/utils/gameLogic.test.js`.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 📚 Project Documentation
+- [**Requirements & Spec (`REQUIREMENTS.md`)**](./REQUIREMENTS.md) — Functional requirements, mobile-first layout specs, file structure, and acceptance checklist.
+- [**Step-by-Step Build Guide (`GUIDE.md`)**](./GUIDE.md) — 8 short, kid-friendly missions separating **🛠️ Parent Driver** setup from **🧒 7-Year-Old Co-Pilot** coding & testing tasks.
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+## 🚀 Quick Commands
+```bash
+npm run dev       # Start local dev server (accessible on computer + phone via local Wi-Fi)
+npm test          # Run Vitest unit tests in watch mode
+npm run build     # Build production static files into ./dist
+```

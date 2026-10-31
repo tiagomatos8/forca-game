@@ -30,7 +30,8 @@ The app will be deployed to **GitHub Pages** so it can be played anywhere on bot
   - `category`: Short category label (e.g., `"Animals"`, `"Space"`, `"Food"`).
   - `hint`: Kid-friendly clue (e.g., `"A giant prehistoric reptile"`).
 - At the start of each round, the game selects a random word from the list (avoiding immediate repeats when possible).
-- Players can see the **Category** automatically and optionally click a **"Show Hint 💡"** button if they get stuck.
+- Players can see the **Category** automatically.
+- **Hint Restriction (2 Lives Left)**: Hints are locked at the start of a round (`"💡 Hint not permited yet!"`) and only become available when the player has **2 or fewer lives left** (`livesLeft <= 2`). Once unlocked, players can click the **"💡 Need a Hint?"** button to reveal the clue.
 
 ### FR-2: Classic Stick-Figure Gallows (6 Lives)
 - Rendered via an inline SVG component (`src/components/HangmanDrawing.jsx`).
@@ -69,7 +70,7 @@ The app will be deployed to **GitHub Pages** so it can be played anywhere on bot
 - **Lose Condition**: The number of wrong guesses reaches `MAX_MISTAKES` (`6`).
 - **End-of-Round Banner**:
   - Displays a celebratory win message (e.g., `"🎉 YOU WON!"`) or encouraging lose message (e.g., `"💀 GAME OVER! The word was..."`).
-  - Displays a prominent **"Play Again 🔄"** button that resets `guessedLetters`, hides the hint, and picks a new random word.
+  - Displays a prominent **"Play Again 🔄"** button that resets `guessedLetters`, hides and locks the hint again, and picks a new random word.
 
 ---
 
@@ -81,7 +82,7 @@ The app will be deployed to **GitHub Pages** so it can be played anywhere on bot
   - Keyboard buttons have a minimum tap height of `44px` (`h-11` or `h-12`) and `touch-manipulation` to prevent double-tap zoom delays on iOS/Android.
 - **Kid-Friendly Code Structure**:
   - Pure game logic lives in `src/utils/gameLogic.js` with zero React dependencies so it is easy to reason about and test in Vitest.
-  - Constants like `MAX_MISTAKES = 6`, colors, and messages are clearly named at the top of files.
+  - Constants like `MAX_MISTAKES = 6`, `HINT_MAX_LIVES = 2`, colors, and messages are clearly named at the top of files.
 
 ---
 
@@ -102,7 +103,7 @@ forca-game/
 │   ├── data/
 │   │   └── words.js               # ⭐ KID ZONE: Word list, categories, and hints
 │   ├── utils/
-│   │   ├── gameLogic.js           # Pure helper functions (wrong guesses, win/lose checks)
+│   │   ├── gameLogic.js           # Pure helper functions (wrong guesses, win/lose & hint checks)
 │   │   └── gameLogic.test.js      # ⭐ KID ZONE: Simple Vitest unit tests
 │   ├── App.jsx                    # Main game state & physical keyboard listener
 │   ├── index.css                  # Tailwind CSS import
@@ -119,6 +120,7 @@ forca-game/
 - [ ] Clicking an on-screen letter or pressing a physical key `A–Z` registers a guess.
 - [ ] Correct letters appear in their matching slots in the word.
 - [ ] Wrong letters add one stick-figure body part (up to 6 parts) and reduce remaining hearts.
+- [ ] Hint is locked (`"💡 Hint not permited yet!"`) until the player has 2 or fewer lives remaining, then unlocks the `"💡 Need a Hint?"` button.
 - [ ] Already-guessed letters cannot be guessed a second time.
 - [ ] Guessing all letters before 6 mistakes displays the **Win** state.
 - [ ] Making 6 mistakes displays the **Lose** state and reveals the secret word.

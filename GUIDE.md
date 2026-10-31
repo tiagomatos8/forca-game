@@ -116,6 +116,7 @@ Before building the UI, write the rules of Hangman as tiny pure functions so you
 ### 🛠️ Parent Driver: Create `src/utils/gameLogic.js`
 ```js
 export const MAX_MISTAKES = 6;
+export const HINT_MAX_LIVES = 2;
 
 // 1. Return only the guessed letters that are NOT in the secret word
 export function getWrongGuesses(secretWord, guessedLetters) {
@@ -133,6 +134,11 @@ export function isGameWon(secretWord, guessedLetters) {
 export function isGameLost(secretWord, guessedLetters) {
   return getWrongGuesses(secretWord, guessedLetters).length >= MAX_MISTAKES;
 }
+
+// 4. Can the player use a hint? (Only when 2 or fewer lives are left)
+export function canUseHint(livesLeft) {
+  return livesLeft <= HINT_MAX_LIVES;
+}
 ```
 
 ### 🧒 Co-Pilot Task: Play "Red Light, Green Light" with Vitest!
@@ -140,7 +146,13 @@ Create `src/utils/gameLogic.test.js`:
 
 ```js
 import { describe, it, expect } from "vitest";
-import { getWrongGuesses, isGameWon, isGameLost } from "./gameLogic";
+import {
+  MAX_MISTAKES,
+  getWrongGuesses,
+  isGameWon,
+  isGameLost,
+  canUseHint,
+} from "./gameLogic";
 
 describe("Hangman Game Rules", () => {
   it("counts wrong guesses correctly", () => {
@@ -157,6 +169,27 @@ describe("Hangman Game Rules", () => {
   it("knows when the player LOSES after 6 mistakes", () => {
     const lost = isGameLost("DOG", ["A", "B", "C", "E", "F", "H"]);
     expect(lost).toBe(true);
+  });
+
+  it("does NOT allow a hint when more than 2 lives are left", () => {
+    expect(canUseHint(6)).toBe(false);
+    expect(canUseHint(5)).toBe(false);
+    expect(canUseHint(4)).toBe(false);
+    expect(canUseHint(3)).toBe(false);
+  });
+
+  it("allows a hint when 2 or fewer lives are left", () => {
+    expect(canUseHint(2)).toBe(true);
+    expect(canUseHint(1)).toBe(true);
+    expect(canUseHint(0)).toBe(true);
+  });
+
+  it("unlocks hint only after 4 wrong guesses (2 lives remaining)", () => {
+    const afterThreeMistakes = MAX_MISTAKES - getWrongGuesses("DOG", ["A", "B", "C"]).length;
+    expect(canUseHint(afterThreeMistakes)).toBe(false);
+
+    const afterFourMistakes = MAX_MISTAKES - getWrongGuesses("DOG", ["A", "B", "C", "E"]).length;
+    expect(canUseHint(afterFourMistakes)).toBe(true);
   });
 });
 ```
@@ -325,6 +358,7 @@ import {
   getWrongGuesses,
   isGameWon,
   isGameLost,
+  canUseHint,
 } from "./utils/gameLogic";
 import HangmanDrawing from "./components/HangmanDrawing";
 import WordDisplay from "./components/WordDisplay";
@@ -334,6 +368,7 @@ export default function App() {
   const [wordEntry, setWordEntry] = useState(() => getRandomWord());
   const [guessedLetters, setGuessedLetters] = useState([]);
   const [showHint, setShowHint] = useState(false);
+  const [isHintPermited, setIsHintPermited] = useState(false);
 
   const secretWord = wordEntry.word;
   const wrongGuesses = getWrongGuesses(secretWord, guessedLetters);
@@ -354,6 +389,7 @@ export default function App() {
     setWordEntry((prev) => getRandomWord(prev.word));
     setGuessedLetters([]);
     setShowHint(false);
+    setIsHintPermited(false);
   }, []);
 
   // Physical keyboard support for desktop play
@@ -370,16 +406,24 @@ export default function App() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleGuess, isGameOver, startNewGame]);
 
+  // Hint should be only permited when 2 lives left.
+  // in a useeffect.
+  useEffect(() => {
+    if (canUseHint(livesLeft)) {
+      setIsHintPermited(true);
+    }
+  }, [livesLeft]);
+
   // 🧒 KID ZONE: Customize your win and lose messages!
   const WIN_MESSAGE = "🎉 YOU SAVED HIM! AWESOME JOB!";
   const LOSE_MESSAGE = "💀 OH NO! BETTER LUCK NEXT TIME!";
 
   return (
-    <main className="min-h-dvh bg-sky-100 flex flex-col items-center justify-between py-3 px-2 font-sans select-none">
+    <main className="min-h-dvh bg-lime-200 flex flex-col items-center justify-between py-3 px-2 font-sans select-none">
       {/* Top Header & Lives */}
       <header className="text-center">
         <h1 className="text-2xl md:text-4xl font-extrabold text-slate-800">
-          SUPER HANGMAN
+          Luca and Tiago SUPER HANGMAN
         </h1>
         <div className="flex items-center justify-center gap-3 mt-1 text-sm md:text-base font-bold text-slate-700">
           <span className="bg-amber-200 px-3 py-0.5 rounded-full">
@@ -396,20 +440,28 @@ export default function App() {
       <HangmanDrawing wrongGuessCount={wrongGuesses.length} />
 
       {/* Hint Button / Text */}
-      <div className="h-7 flex items-center justify-center">
-        {!showHint ? (
-          <button
-            onClick={() => setShowHint(true)}
-            className="text-xs md:text-sm bg-amber-300 hover:bg-amber-400 text-slate-900 font-bold px-3 py-1 rounded-full shadow-xs"
-          >
-            💡 Need a Hint?
-          </button>
-        ) : (
+      {isHintPermited ? (
+        <div className="h-7 flex items-center justify-center">
+          {!showHint ? (
+            <button
+              onClick={() => setShowHint(true)}
+              className="text-xs md:text-sm bg-amber-300 hover:bg-amber-400 text-slate-900 font-bold px-3 py-1 rounded-full shadow-xs"
+            >
+              💡 Need a Hint?
+            </button>
+          ) : (
+            <p className="text-sm md:text-base font-semibold text-slate-700 bg-white/70 px-3 py-0.5 rounded-full">
+              💡 Hint: {wordEntry.hint}
+            </p>
+          )}
+        </div>
+      ) : (
+        <div className="h-7 flex items-center justify-center">
           <p className="text-sm md:text-base font-semibold text-slate-700 bg-white/70 px-3 py-0.5 rounded-full">
-            💡 Hint: {wordEntry.hint}
+            💡 Hint not permited yet!
           </p>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Mystery Word Slots */}
       <WordDisplay
