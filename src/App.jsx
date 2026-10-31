@@ -55,7 +55,7 @@ export default function App() {
   const LOSE_MESSAGE = "💀 OH NO! BETTER LUCK NEXT TIME!";
 
   return (
-    <main className="min-h-dvh bg-sky-100 flex flex-col items-center justify-between py-3 px-2 font-sans select-none">
+    <main className="min-h-dvh bg-lime-200 flex flex-col items-center justify-between py-3 px-2 font-sans select-none">
       {/* Top Header & Lives */}
       <header className="text-center">
         <h1 className="text-2xl md:text-4xl font-extrabold text-slate-800">
