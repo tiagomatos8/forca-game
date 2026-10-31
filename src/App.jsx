@@ -14,6 +14,7 @@ export default function App() {
   const [wordEntry, setWordEntry] = useState(() => getRandomWord());
   const [guessedLetters, setGuessedLetters] = useState([]);
   const [showHint, setShowHint] = useState(false);
+  const [isHintPermited, setIsHintPermited] = useState(false);
 
   const secretWord = wordEntry.word;
   const wrongGuesses = getWrongGuesses(secretWord, guessedLetters);
@@ -50,6 +51,14 @@ export default function App() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleGuess, isGameOver, startNewGame]);
 
+  // Hint should be only permited when 2 lives left.
+  // in a useeffect.
+  useEffect(() => {
+    if (livesLeft <= 2) {
+      setIsHintPermited(true);
+    }
+  }, [livesLeft]);
+
   // 🧒 KID ZONE: Customize your win and lose messages!
   const WIN_MESSAGE = "🎉 YOU SAVED HIM! AWESOME JOB!";
   const LOSE_MESSAGE = "💀 OH NO! BETTER LUCK NEXT TIME!";
@@ -76,20 +85,28 @@ export default function App() {
       <HangmanDrawing wrongGuessCount={wrongGuesses.length} />
 
       {/* Hint Button / Text */}
-      <div className="h-7 flex items-center justify-center">
-        {!showHint ? (
-          <button
-            onClick={() => setShowHint(true)}
-            className="text-xs md:text-sm bg-amber-300 hover:bg-amber-400 text-slate-900 font-bold px-3 py-1 rounded-full shadow-xs"
-          >
-            💡 Need a Hint?
-          </button>
-        ) : (
+      {isHintPermited ? (
+        <div className="h-7 flex items-center justify-center">
+          {!showHint ? (
+            <button
+              onClick={() => setShowHint(true)}
+              className="text-xs md:text-sm bg-amber-300 hover:bg-amber-400 text-slate-900 font-bold px-3 py-1 rounded-full shadow-xs"
+            >
+              💡 Need a Hint?
+            </button>
+          ) : (
+            <p className="text-sm md:text-base font-semibold text-slate-700 bg-white/70 px-3 py-0.5 rounded-full">
+              💡 Hint: {wordEntry.hint}
+            </p>
+          )}
+        </div>
+      ) : (
+        <div className="h-7 flex items-center justify-center">
           <p className="text-sm md:text-base font-semibold text-slate-700 bg-white/70 px-3 py-0.5 rounded-full">
-            💡 Hint: {wordEntry.hint}
+            💡 Hint not permited yet!
           </p>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Mystery Word Slots */}
       <WordDisplay
