@@ -100,7 +100,8 @@ forca-game/
 │   │   ├── HangmanDrawing.jsx     # SVG gallows + 6 stick-figure body parts
 │   │   ├── WordDisplay.jsx        # Letter boxes / underscores for the secret word
 │   │   ├── Keyboard.jsx           # A-Z on-screen buttons
-│   │   └── GameStatus.jsx         # Win/Lose banner, lives hearts, & Play Again button
+│   │   ├── GameStatus.jsx         # Win/Lose banner, lives hearts, & Play Again button
+│   │   └── ScoreBoard.jsx         # In-session wins and losses display
 │   ├── data/
 │   │   └── words.js               # ⭐ KID ZONE: Word list, categories, and hints
 │   ├── utils/

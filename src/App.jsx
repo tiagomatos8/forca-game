@@ -11,6 +11,7 @@ import {
 import HangmanDrawing from "./components/HangmanDrawing";
 import WordDisplay from "./components/WordDisplay";
 import Keyboard from "./components/Keyboard";
+import ScoreBoard from "./components/ScoreBoard";
 
 export default function App() {
   const [wordEntry, setWordEntry] = useState(() => getRandomWord());
@@ -91,14 +92,7 @@ export default function App() {
             {"🖤".repeat(wrongGuesses.length)}
           </span>
         </div>
-        <div className="flex items-center justify-center gap-3 mt-1 text-sm font-bold text-slate-700">
-          <span className="bg-emerald-200 px-3 py-0.5 rounded-full">
-            Wins: {score.wins}
-          </span>
-          <span className="bg-rose-200 px-3 py-0.5 rounded-full">
-            Losses: {score.losses}
-          </span>
-        </div>
+        <ScoreBoard wins={score.wins} losses={score.losses} />
       </header>
 
       {/* Stick Figure Drawing */}
