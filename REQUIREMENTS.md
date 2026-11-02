@@ -71,6 +71,7 @@ The app will be deployed to **GitHub Pages** so it can be played anywhere on bot
 - **End-of-Round Banner**:
   - Displays a celebratory win message (e.g., `"🎉 YOU WON!"`) or encouraging lose message (e.g., `"💀 GAME OVER! The word was..."`).
   - Displays a prominent **"Play Again 🔄"** button that resets `guessedLetters`, hides and locks the hint again, and picks a new random word.
+- **In-Session Score**: Displays the player's cumulative wins and losses for the current browser session.
 
 ---
 
@@ -99,7 +100,8 @@ forca-game/
 │   │   ├── HangmanDrawing.jsx     # SVG gallows + 6 stick-figure body parts
 │   │   ├── WordDisplay.jsx        # Letter boxes / underscores for the secret word
 │   │   ├── Keyboard.jsx           # A-Z on-screen buttons
-│   │   └── GameStatus.jsx         # Win/Lose banner, lives hearts, & Play Again button
+│   │   ├── GameStatus.jsx         # Win/Lose banner, lives hearts, & Play Again button
+│   │   └── ScoreBoard.jsx         # In-session wins and losses display
 │   ├── data/
 │   │   └── words.js               # ⭐ KID ZONE: Word list, categories, and hints
 │   ├── utils/
@@ -125,7 +127,7 @@ forca-game/
 - [ ] Guessing all letters before 6 mistakes displays the **Win** state.
 - [ ] Making 6 mistakes displays the **Lose** state and reveals the secret word.
 - [ ] **Play Again** resets the board with a new word.
+- [ ] Wins and losses are displayed and updated once per completed round.
 - [ ] Unit tests in `src/utils/gameLogic.test.js` pass with `npm test`.
 - [ ] Layout works comfortably on both a mobile phone screen (`375px` width) and desktop browser.
 - [ ] App deploys and runs at `https://<username>.github.io/forca-game/`.
-

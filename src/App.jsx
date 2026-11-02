@@ -3,33 +3,44 @@ import { getRandomWord } from "./data/words";
 import {
   MAX_MISTAKES,
   getWrongGuesses,
-  isGameWon,
-  isGameLost,
   canUseHint,
+  INITIAL_SCORE,
+  getGameResult,
+  updateScore,
 } from "./utils/gameLogic";
 import HangmanDrawing from "./components/HangmanDrawing";
 import WordDisplay from "./components/WordDisplay";
 import Keyboard from "./components/Keyboard";
+import ScoreBoard from "./components/ScoreBoard";
 
 export default function App() {
   const [wordEntry, setWordEntry] = useState(() => getRandomWord());
   const [guessedLetters, setGuessedLetters] = useState([]);
   const [showHint, setShowHint] = useState(false);
   const [isHintPermited, setIsHintPermited] = useState(false);
+  const [score, setScore] = useState(INITIAL_SCORE);
 
   const secretWord = wordEntry.word;
   const wrongGuesses = getWrongGuesses(secretWord, guessedLetters);
-  const isWinner = isGameWon(secretWord, guessedLetters);
-  const isLoser = isGameLost(secretWord, guessedLetters);
-  const isGameOver = isWinner || isLoser;
+  const gameResult = getGameResult(secretWord, guessedLetters);
+  const isWinner = gameResult === "win";
+  const isLoser = gameResult === "loss";
+  const isGameOver = gameResult !== null;
   const livesLeft = MAX_MISTAKES - wrongGuesses.length;
 
   const handleGuess = useCallback(
     (letter) => {
       if (isGameOver || guessedLetters.includes(letter)) return;
-      setGuessedLetters((prev) => [...prev, letter]);
+
+      const nextGuessedLetters = [...guessedLetters, letter];
+      const nextGameResult = getGameResult(secretWord, nextGuessedLetters);
+      setGuessedLetters(nextGuessedLetters);
+
+      if (nextGameResult !== null) {
+        setScore((currentScore) => updateScore(currentScore, nextGameResult));
+      }
     },
-    [guessedLetters, isGameOver]
+    [guessedLetters, isGameOver, secretWord]
   );
 
   const startNewGame = useCallback(() => {
@@ -81,6 +92,7 @@ export default function App() {
             {"🖤".repeat(wrongGuesses.length)}
           </span>
         </div>
+        <ScoreBoard wins={score.wins} losses={score.losses} />
       </header>
 
       {/* Stick Figure Drawing */}
