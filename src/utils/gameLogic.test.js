@@ -1,10 +1,13 @@
 import { describe, it, expect } from "vitest";
 import {
     MAX_MISTAKES,
+    INITIAL_SCORE,
     getWrongGuesses,
     isGameWon,
     isGameLost,
     canUseHint,
+    getGameResult,
+    updateScore,
 } from "./gameLogic";
 
 describe("Hangman Game Rules", () => {
@@ -43,5 +46,17 @@ describe("Hangman Game Rules", () => {
 
         const afterFourMistakes = MAX_MISTAKES - getWrongGuesses("DOG", ["A", "B", "C", "E"]).length;
         expect(canUseHint(afterFourMistakes)).toBe(true);
+    });
+
+    it("identifies a finished win, loss, or in-progress round", () => {
+        expect(getGameResult("DOG", ["D", "O", "G"])).toBe("win");
+        expect(getGameResult("DOG", ["A", "B", "C", "E", "F", "H"])).toBe("loss");
+        expect(getGameResult("DOG", ["D"])).toBe(null);
+    });
+
+    it("updates only the matching score when a round ends", () => {
+        expect(updateScore(INITIAL_SCORE, "win")).toEqual({ wins: 1, losses: 0 });
+        expect(updateScore({ wins: 2, losses: 1 }, "loss")).toEqual({ wins: 2, losses: 2 });
+        expect(updateScore({ wins: 2, losses: 1 }, null)).toEqual({ wins: 2, losses: 1 });
     });
 });

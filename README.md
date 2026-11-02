@@ -5,6 +5,7 @@ A mobile- and desktop-friendly English Hangman game built with **Vite, React, Ja
 ## ✨ Features
 - **Classic 6-Lives Hangman**: Interactive SVG stick figure that updates with each wrong guess.
 - **Last-Chance Hint System**: Hints stay locked (`"💡 Hint not permited yet!"`) until the player is down to **2 or fewer lives remaining**, unlocking the `"💡 Need a Hint?"` button.
+- **In-Session Scoreboard**: Wins and losses are tracked in memory and displayed while you play.
 - **Dual Input**: Play using the on-screen touch keyboard or a physical desktop keyboard (`A–Z`, plus `Enter` to play again).
 - **Kid-Hackable & Tested**: Pure game rules in `src/utils/gameLogic.js` covered by Vitest unit tests in `src/utils/gameLogic.test.js`.
 
